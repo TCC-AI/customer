@@ -27,49 +27,25 @@
       text-align: center;
       box-shadow: 0 2px 10px rgba(0,0,0,0.2);
       z-index: 100;
-      position: relative;
-    }
-    
-    .header-content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 15px;
-      margin-bottom: 10px;
-    }
-    
-    .header-logo {
-      width: 50px;
-      height: 50px;
-      object-fit: contain;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-    }
-    
-    .header-text {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
     }
     
     .header h1 {
       font-size: 24px;
-      margin: 0;
-      font-weight: bold;
+      margin-bottom: 5px;
     }
     
     .header p {
       font-size: 14px;
       opacity: 0.9;
-      margin: 5px 0 0 0;
     }
     
     .session-info {
       background: rgba(255,255,255,0.1);
       padding: 8px 15px;
       border-radius: 20px;
+      margin-top: 10px;
       font-size: 12px;
       display: inline-block;
-      backdrop-filter: blur(5px);
     }
     
     .chat-container { 
@@ -103,14 +79,13 @@
       border: 1px solid #e0e0e0;
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
       position: relative;
-      margin-left: 40px;
     }
     
     .assistant-message::before {
       content: '🤖';
       position: absolute;
-      left: -35px;
-      top: 10px;
+      left: -10px;
+      top: -5px;
       background: #2196F3;
       color: white;
       width: 30px;
@@ -226,75 +201,12 @@
     
     /* 響應式設計 */
     @media (max-width: 768px) {
-      .header-content {
-        gap: 10px;
-      }
-      
-      .header-logo {
-        width: 40px;
-        height: 40px;
-      }
-      
-      .header h1 { 
-        font-size: 18px; 
-      }
-      
-      .header p { 
-        font-size: 12px; 
-      }
-      
-      .session-info {
-        font-size: 11px;
-        padding: 6px 12px;
-      }
-      
-      .message { 
-        max-width: 95%; 
-      }
-      
-      .input-area { 
-        padding: 15px; 
-      }
-      
-      #userInput { 
-        font-size: 16px; 
-      }
-      
-      .send-btn { 
-        padding: 12px 20px; 
-      }
-      
-      .assistant-message { 
-        margin-left: 20px; 
-      }
-      
-      .assistant-message::before { 
-        left: -25px; 
-        width: 25px; 
-        height: 25px; 
-        font-size: 14px; 
-      }
-    }
-    
-    /* 超小螢幕 */
-    @media (max-width: 480px) {
-      .header-content {
-        flex-direction: column;
-        gap: 8px;
-      }
-      
-      .header-logo {
-        width: 35px;
-        height: 35px;
-      }
-      
-      .header h1 { 
-        font-size: 16px; 
-      }
-      
-      .header p { 
-        font-size: 11px; 
-      }
+      .header h1 { font-size: 20px; }
+      .header p { font-size: 12px; }
+      .message { max-width: 95%; }
+      .input-area { padding: 15px; }
+      #userInput { font-size: 16px; }
+      .send-btn { padding: 12px 20px; }
     }
     
     /* 滾動條美化 */
@@ -319,13 +231,8 @@
 </head>
 <body>
   <div class="header">
-    <div class="header-content">
-      <img src="L1.png" alt="昶青物流 Logo" class="header-logo">
-      <div class="header-text">
-        <h1>昶青物流智能客服</h1>
-        <p>我將引導您解決問題，請詳細回答每個問題</p>
-      </div>
-    </div>
+    <h1>🚚 昶青物流智能客服</h1>
+    <p>我將引導您解決問題，請詳細回答每個問題</p>
     <div class="session-info">
       <strong>對話編號：</strong><span id="sessionId"></span> | 
       <strong>開始時間：</strong><span id="startTime"></span>
@@ -341,18 +248,19 @@
   
   <div class="input-area">
     <div class="input-group">
-      <input type="text" id="userInput" placeholder="請描述您的問題...">
-      <button class="send-btn" id="sendBtn">發送</button>
+      <input type="text" id="userInput" placeholder="請描述您的問題..." 
+             onkeypress="handleKeyPress(event)">
+      <button class="send-btn" onclick="sendMessage()" id="sendBtn">
+        發送
+      </button>
     </div>
   </div>
 
   <script>
-    // 🔧 設定區域 - 請修改為您的 Google Apps Script URL
     const CONFIG = {
-      GAS_URL: 'https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec'
+      GAS_URL: 'https://script.google.com/macros/s/AKfycbyzQP-EF9flvBYMrUjuYVDknQzXaYyOCmW7deeRpInaSlnBjezDPGpFhRnw1BWzT5Dc9g/exec'
     };
 
-    // 全域變數
     let chatHistory = [];
     let sessionId = '';
     let isProcessing = false;
@@ -369,15 +277,9 @@
     // 發送訊息
     async function sendMessage() {
       const input = document.getElementById('userInput');
-      const sendBtn = document.getElementById('sendBtn');
       const message = input.value.trim();
       
       if (!message || isProcessing) return;
-      
-      // 禁用輸入和按鈕
-      input.disabled = true;
-      sendBtn.disabled = true;
-      isProcessing = true;
       
       // 顯示用戶訊息
       addMessage(message, 'user');
@@ -385,6 +287,7 @@
       
       // 顯示載入狀態
       showLoading();
+      isProcessing = true;
       
       try {
         const response = await makeRequest({
@@ -405,7 +308,7 @@
           addMessage(response.answer, 'assistant');
           
           // 檢查是否需要結束對話並要求聯絡資訊
-          if (response.shouldRequestContact && !conversationEnded) {
+          if (response.shouldRequestContact) {
             conversationEnded = true;
             setTimeout(() => {
               const contactMessage = "請告訴我您的公司名稱及聯絡方式，我們會有專人與您聯繫！";
@@ -414,20 +317,17 @@
             }, 1000);
           }
           
+          // 滾動到底部
+          scrollToBottom();
         } else {
           addMessage('❌ 抱歉，系統暫時無法回應，請稍後再試。', 'assistant');
         }
       } catch (error) {
-        console.error('發送訊息錯誤:', error);
         hideLoading();
         addMessage('❌ 連線錯誤，請檢查網路連線。', 'assistant');
       }
       
-      // 重新啟用輸入和按鈕
-      input.disabled = false;
-      sendBtn.disabled = false;
       isProcessing = false;
-      input.focus();
     }
 
     // 添加訊息到聊天容器
@@ -514,21 +414,11 @@
       });
     }
 
-    // 事件監聽器設定
-    document.addEventListener('DOMContentLoaded', function() {
-      // 初始化會話
+    // 頁面載入時初始化
+    window.onload = function() {
       initSession();
-      
-      // 設定事件監聽器
-      const userInput = document.getElementById('userInput');
-      const sendBtn = document.getElementById('sendBtn');
-      
-      userInput.addEventListener('keypress', handleKeyPress);
-      sendBtn.addEventListener('click', sendMessage);
-      
-      // 聚焦到輸入框
-      userInput.focus();
-    });
+      document.getElementById('userInput').focus();
+    };
   </script>
 </body>
 </html>
