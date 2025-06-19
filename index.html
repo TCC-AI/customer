@@ -41,15 +41,16 @@
 }
     
     .header-logo {
-      width: 160px;
-      height: 160px;
+      width: 140px;
+      height: 140px;
       object-fit: contain;
       filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
       transition: transform 0.3s ease;
-      transform: translateX(300px);    /* 向右移動20px */
     }
     
-  
+    .header-logo:hover {
+      transform: scale(1.05);
+    }
     
     .header-center {
       flex: 1;
@@ -253,7 +254,10 @@
         width: 100%;
       }
       
-  
+      .header-logo {
+        width: 50px;
+        height: 50px;
+      }
       
       .header h1 { 
         font-size: 24px; 
@@ -347,7 +351,7 @@
 <body>
   <div class="header">
     <div class="header-left">
-     <img src="L1.png" alt="昶青物流 Logo" class="header-logo" style="width: 400px; height: auto;">
+      <img src="L1.png" alt="昶青物流 Logo" class="header-logo">
     </div>
     
     <div class="header-center">
